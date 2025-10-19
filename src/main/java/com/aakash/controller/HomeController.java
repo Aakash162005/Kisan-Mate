@@ -1,5 +1,7 @@
 package com.aakash.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +12,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.aakash.dao.GovtSchemeDao;
 import com.aakash.dao.ProductDao;
 import com.aakash.dao.UserDao;
 import com.aakash.dao.VendorDao;
+import com.aakash.model.GovtScheme;
 import com.aakash.model.Product;
 import com.aakash.model.User;
 import com.aakash.model.Vendor;
@@ -27,13 +31,16 @@ public class HomeController {
 	VendorDao vendorDao = (VendorDao) context.getBean("vendorDao");
 	Product product = (Product) context.getBean("product");
 	ProductDao productDao = (ProductDao) context.getBean("productDao");
+	GovtScheme govtScheme = (GovtScheme) context.getBean("govtScheme");
+	GovtSchemeDao govtSchemeDao = (GovtSchemeDao) context.getBean("govtSchemeDao");
 
 	@RequestMapping("/")
 	public String home() {
 		System.out.println("Opening index.jsp");
 		return "index"; // /WEB-INF/views/index.jsp
 	}
-
+	
+	
 	// -------------------------------------------------------------------------------------------------------------------------------------
 
 	// Open user registration form
@@ -48,7 +55,7 @@ public class HomeController {
 	public String adduser(HttpServletRequest request) {
 
 		String uEmail = request.getParameter("uEmail");
-				// user.setuId(Integer.parseInt(request.getParameter("uId")));
+		// user.setuId(Integer.parseInt(request.getParameter("uId")));
 		user.setuName(request.getParameter("uName"));
 		user.setuEmail(request.getParameter("uEmail"));
 		user.setuPass(request.getParameter("uPass"));
@@ -105,8 +112,8 @@ public class HomeController {
 	}
 
 	// -------------------------------------------------------------------------------------------------------------------------------------
-	
-	// add the vendor in database by registration 
+
+	// add the vendor in database by registration
 	@RequestMapping(path = "/addVendor", method = RequestMethod.POST)
 	public String addVendor(HttpServletRequest request) {
 
@@ -130,9 +137,7 @@ public class HomeController {
 											// help of UserDao class
 
 			return "login"; // after regist.. go to login.jsp page
-		} 
-		else
-		{
+		} else {
 			System.err.println("Account Allready Exist...");
 			return "regist"; // regist.jsp page not go on login page
 		}
@@ -151,9 +156,7 @@ public class HomeController {
 
 		if (vendor != null && us.getvPass().equals(vPass)) {
 			return "vendorHome"; // redirect to user home page
-		} 
-		else 
-		{
+		} else {
 			System.err.println("Invalid email or password.");
 			return "login"; // Show login page again
 		}
@@ -170,39 +173,45 @@ public class HomeController {
 	// -------------------------------------------------------------------------------------------------------------------------------------
 
 	@RequestMapping("/adminHome")
-	public String adminHome() {
+	public String adminHome(Model model) { // Use Model to pass data
+		
+		// Get the list of all users from the DAO
+		List<User> users = this.userDao.getAllUsers();
+		
+		// Add the user list and the count to the model
+		// We use the name "users" because that's what your JSP expects
+		model.addAttribute("users", users);
+		model.addAttribute("userCount", users.size());
+		
+		System.out.println("Sending " + users.size() + " users to adminHome.jsp");
+
 		return "adminHome";
 	}
-	
+
 	// -------------------------------------------------------------------------------------------------------------------------------------
 
 	// Handle the admin login by email and pass...
 	@RequestMapping(path = "/checkAdminLogin", method = RequestMethod.POST)
-	public String checkAdminLogin(HttpServletRequest request, Model model) 
-	{
+	public String checkAdminLogin(HttpServletRequest request, Model model) {
 
 		String aEmail = request.getParameter("aEmail");
 		String aPass = request.getParameter("aPass");
 
-		if (aPass.equals("admin") && aEmail.equals("admin@gmail.com"))
-		{
+		if (aPass.equals("admin") && aEmail.equals("admin@gmail.com")) {
 			return "adminHome"; // redirect to user home page
-		} 
-		else 
-		{
+		} else {
 			System.err.println("Invalid email or password.");
 			return "login"; // Show login page again
-	    }
+		}
 	}
-		
+
 	// -------------------------------------------------------------------------------------------------------------------------------------
-		
-    //Product ADD in Database
-		
+
+	// Product ADD in Database
+
 	@RequestMapping(path = "/addProduct", method = RequestMethod.POST)
-	public void addProduct(HttpServletRequest request, Model model)
-	{
-		
+	public void addProduct(HttpServletRequest request, Model model) {
+
 		product.setpName(request.getParameter("pName"));
 		product.setpCategory(request.getParameter("pCategory"));
 		product.setpPrice(request.getParameter("pPrice"));
@@ -211,11 +220,10 @@ public class HomeController {
 		product.setpImage(request.getParameter("pImage"));
 		product.setvEmail(request.getParameter("vEmail"));
 		productDao.insertProduct(product);
-		
-		
-	}
-	
-	
-  
 
+	}
+
+	// -------------------------------------------------------------------------------------------------------------------------------------
+
+	
 }

@@ -40,9 +40,9 @@ public class UserDao {
 
 	// read by help of uActions of user
 	public User getUsers(String uActions) {
-		String hql = "from User where uEmail = ?";
-		List<User> list = (List<User>) hibernateTemplate.find(hql, uActions);
-		return list.isEmpty() ? null : list.get(0);
+	    String hql = "from User where uActions = ?"; // Changed from uEmail
+	    List<User> list = (List<User>) hibernateTemplate.find(hql, uActions);
+	    return list.isEmpty() ? null : list.get(0);
 	}
 
 	// read the all users
@@ -60,7 +60,10 @@ public class UserDao {
 	// Delete user by help of user id (uId)
 	@Transactional
 	public void deleteUser(int uId) {
-		User user = this.hibernateTemplate.get(User.class, uId);
+	    User user = this.hibernateTemplate.get(User.class, uId);
+	    if (user != null) {
+	        this.hibernateTemplate.delete(user); // Add this line
+	    }
 	}
 
 	// getter and setter for HibernateTemplate

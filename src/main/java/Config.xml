@@ -41,6 +41,7 @@
 				<value>com.aakash.model.User</value>
 				<value>com.aakash.model.Vendor</value>
 				<value>com.aakash.model.Product</value>
+				<value>com.aakash.model.GovtScheme</value>
 			</list>
 		</property>
 	</bean>

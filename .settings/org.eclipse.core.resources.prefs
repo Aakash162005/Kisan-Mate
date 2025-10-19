@@ -1,6 +1,9 @@
 eclipse.preferences.version=1
+encoding//src/main/java/com/aakash/controller/GovtSchemeController.java=UTF-8
 encoding//src/main/java/com/aakash/controller/HomeController.java=UTF-8
+encoding//src/main/java/com/aakash/dao/GovtSchemeDao.java=UTF-8
 encoding//src/main/webapp/WEB-INF/views/adminHome.jsp=UTF-8
+encoding//src/main/webapp/WEB-INF/views/govt_schemes.jsp=UTF-8
 encoding//src/main/webapp/WEB-INF/views/index.jsp=UTF-8
 encoding//src/main/webapp/WEB-INF/views/login.jsp=UTF-8
 encoding//src/main/webapp/WEB-INF/views/regist.jsp=UTF-8
